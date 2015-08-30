@@ -181,7 +181,7 @@
     $("#btn").click(function(){
         $.ajax({
             type:"get",
-            url:"https://github.com/Erane/Turntable/blob/gh-pages/games.php",
+            url:"PHP/games.php",
             dataType:"json"
         }).done(function(e){//连接成功
             data=e[1];
@@ -192,7 +192,7 @@
             }
             run();
         }).fail(function(){//连接失败
-            alert("连接失败!请刷新页面")
+            alert("连接失败!请在本地PHP环境下运行")
         })
     })
 </script>
