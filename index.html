@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>抽奖盘</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        body{
+            background: mediumaquamarine;
+        }
+        div{
+            width: 600px;
+            height: 400px;
+            border: 1px solid  rgb(206,203,206);
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            margin: auto;
+        }
+        ul{
+            list-style: none;
+            width: 530px;
+            height: 350px;
+            margin: 0 auto;
+            position: relative;
+            top: 25px;
+        }
+        li{
+            float: left;
+            width: 171px;
+            height: 111px;
+            margin-left: 5px;
+            margin-bottom: 5px;
+            line-height: 111px;
+            text-align: center;
+            background: cornflowerblue;
+            font-size: 20px;
+            position: relative;
+        }
+        li>span{
+            background: black;
+            opacity: .5;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+ <div>
+     <ul>
+         <li style="background:rgb(107,223,239);color: #238997 " id="li1">
+             5元Q币
+             <span></span>
+         </li>
+         <li style="background:rgb(148,235,107);color: #179529" id="li2">
+             3天F码
+             <span></span>
+         </li>
+         <li style="background:rgb(239,203,107); color: #826311" id="li3">
+             谢谢参与
+             <span></span>
+         </li>
+         <li style="background:rgb(239,105,107); color: #a50406" id="li8">
+             10粒豆芽
+             <span></span>
+         </li>
+         <li style="background:#f73232;color: white;cursor: pointer" id="btn">
+             开始抽奖
+         </li>
+         <li style="background:rgb(239,105,181);color: #a2065f" id="li4">
+             免邮劵
+             <span></span>
+         </li>
+         <li style="background:rgb(173,105,239);color: #680c73" id="li7">
+             5元Q币
+             <span></span>
+         </li>
+         <li style="background:rgb(84,224,104);color: #047814" id="li6">
+             惊喜礼包
+             <span></span>
+         </li>
+         <li style="background:rgb(239,105,107); color: #a50406" id="li5">
+             5粒豆芽
+             <span></span>
+         </li>
+     </ul>
+ </div>
+<script src="jQuery/jquery-2.1.4.min.js"></script>
+<script>
+    //设置转圈的速度
+    var step=[
+            ["li1",0],
+            ["li1",500],
+            ["li2",400],
+            ["li3",300],
+            ["li4",200],
+            ["li5",200],
+            ["li6",200],
+            ["li7",200],
+            ["li8",200],
+            ["li1",100],
+            ["li2",100],
+            ["li3",100],
+            ["li4",100],
+            ["li5",100],
+            ["li6",100],
+            ["li7",100],
+            ["li8",100],
+            ["li1",100],
+            ["li2",100],
+            ["li3",100],
+            ["li4",100],
+            ["li5",100],
+            ["li6",100],
+            ["li7",100],
+            ["li8",100],
+            ["li1",100],
+            ["li2",100],
+            ["li3",100],
+            ["li4",100],
+            ["li5",100],
+            ["li6",100],
+            ["li7",100],
+            ["li8",100],
+            ["li1",200],
+            ["li2",300],
+            ["li3",300],
+            ["li4",400],
+            ["li5",400],
+            ["li6",400],
+            ["li7",400],
+            ["li8",400],
+            ["li1",400],
+            ["li2",400],
+            ["li3",400],
+            ["li4",400],
+            ["li5",400],
+            ["li6",400],
+            ["li7",400],
+            ["li8",400]
+    ];
+    //记录当前的step的下标,每一步走到哪里
+    var current=1;
+    //用于指定需要停止的位置
+    var data=8;
+    //奖品总量
+    var total=8;
+    //抽奖后弹窗信息
+    var msg="";
+    //定时器
+    var timer=null;
+
+    function run(){
+        //当前下标的前一个恢复span样式
+        $("#"+step[current-1][0]).find("span").css("display","block");
+        //当前下标隐藏span样式
+        $("#"+step[current][0]).find("span").css("display","none");
+
+        //如果实在不能理解这个公式
+        //你可以这么认为 step.length -1 - current结束后的位置是在li8上
+        //那么如果我需要指定停止的位置,只需要在此基础上加入奖品所在位置即可
+        //无视后面的total
+        if(step.length -1 - current +data == total){
+                alert(msg);
+                window.location.reload();//重新绘制页面
+        }else{
+            timer=setTimeout("run()",step[current][1]);
+            current++;
+        }
+    }
+
+    //利用ajax与后台进行通信
+    $("#btn").click(function(){
+        $.ajax({
+            type:"get",
+            url:"PHP/games.php",
+            dataType:"json"
+        }).done(function(e){//连接成功
+            data=e[1];
+            if(data !== 3){//根据data值判断是否中奖
+                msg="恭喜你抽中了: "+e[0]+" !"
+            }else{
+                msg=e[0]
+            }
+            run();
+        }).fail(function(){//连接失败
+            alert("连接失败!请在本地PHP环境下运行")
+        })
+    })
+</script>
+</body>
+</html>
